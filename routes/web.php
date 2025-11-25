@@ -44,6 +44,7 @@ Route::view('dashboard', 'dashboard')
 
 
 Route::get('/leveringProduct/{id}', [LeveringController::class, 'show'])->name('levering.show');
+Route::post('/leveringProduct/{id}', [LeveringController::class, 'store'])->name('levering.store');
 
 
 // leverancier Overview
