@@ -12,7 +12,7 @@ class LeveringController extends Controller
 {
     public function show($id)
     {
-        $product = DB::table('ProductPerLeverancier')
+        $levering = DB::table('ProductPerLeverancier')
             ->join('Product', 'ProductPerLeverancier.ProductId', '=', 'Product.Id')
             ->join('Leverancier', 'ProductPerLeverancier.LeverancierId', '=', 'Leverancier.Id')
             ->select(
@@ -27,12 +27,12 @@ class LeveringController extends Controller
             ->where('ProductPerLeverancier.Id', $id)
             ->first();
 
-        if (!$product) {
+        if (!$levering) {
             abort(404, 'Product niet gevonden');
         }
 
         return view('leverancier.leveringProduct', [
-            'product' => $product,
+            'product' => $levering,
             'title' => 'Levering Product',
         ]);
     }
