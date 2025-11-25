@@ -16,7 +16,7 @@ BEGIN
         ,L.Leveranciernummer AS Leveranciernummer
         ,L.Mobiel AS Mobiel
         ,COUNT(DISTINCT PPL.ProductId) AS AantalVerschillendeProducten
-        ,PPL.ProductId
+        ,ANY_VALUE(PPL.ProductId) AS ProductId
         ,MAX(PPL.DatumEerstVolgendeLevering) AS DatumEerstVolgendeLevering
     FROM Leverancier AS L
     INNER JOIN

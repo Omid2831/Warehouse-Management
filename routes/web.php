@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LeveringController;
 use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\AllergeenController;
 use App\Http\Controllers\LeverancierController;
@@ -42,10 +43,14 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 
+Route::get('/leveringProduct/{id}', [LeveringController::class, 'show'])->name('levering.show');
+Route::post('/leveringProduct/{id}', [LeveringController::class, 'store'])->name('levering.store');
 
 
 // leverancier Overview
 Route::get('/leverancier/index', [LeverancierController::class, 'index'])->name('leverancier.index');
+// Leverancier Show (implicit model binding)
+Route::get('/leverancier/{leverancier}', [LeverancierController::class, 'show'])->name('leverancier.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
