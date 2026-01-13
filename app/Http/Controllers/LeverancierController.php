@@ -78,7 +78,7 @@ class LeverancierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LeverancierModel $leverancierModel)
+    public function edit(LeverancierModel $leverancier)
     {
         //
     }
@@ -86,7 +86,7 @@ class LeverancierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LeverancierModel $leverancierModel)
+    public function update(Request $request, LeverancierModel $leverancier)
     {
         //
     }
