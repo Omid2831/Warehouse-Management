@@ -49,7 +49,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $redirectTo = strtolower($user->role ?? '') === 'admin' && Route::has('admin.dashboard') ? route('admin.dashboard', absolute: false) : route('home', absolute: false);
+        $redirectTo = strtolower($user->role ?? '') === 'admin' && Route::has('administrator.dashboard') ? route('administrator.dashboard', absolute: false) : route('dashboard', absolute: false);
 
         $this->redirectIntended(default: $redirectTo, navigate: true);
     }
@@ -59,7 +59,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     protected function validateCredentials(): User
     {
-        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
+        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email]);
 
         if (!$user || !Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
             RateLimiter::hit($this->throttleKey());
