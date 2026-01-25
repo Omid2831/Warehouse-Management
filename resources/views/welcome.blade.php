@@ -25,7 +25,8 @@
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
                     @auth
-                        @if (strtolower(auth()->user()->role ?? '') === 'admin')
+                        @php($userRole = strtolower(trim(auth()->user()->role ?? '')))
+                        @if ($userRole === 'admin')
                             <a
                                 href="{{ route('leverancier.index') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
