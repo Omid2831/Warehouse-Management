@@ -166,11 +166,13 @@ VALUES
 -- **********************************************************************************
 
 DROP TABLE IF EXISTS ProductPerLeverancier;
+DROP TABLE IF EXISTS Contact;
 DROP TABLE IF EXISTS Leverancier;
 
 CREATE TABLE IF NOT EXISTS Leverancier
 (
      Id                 SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
+    ,fk_ContactId       SMALLINT             UNSIGNED        NOT NULL
     ,Naam               VARCHAR(60)                          NOT NULL
     ,Contactpersoon     VARCHAR(60)                          NOT NULL
     ,Leveranciernummer  VARCHAR(11)                          NOT NULL
@@ -180,6 +182,7 @@ CREATE TABLE IF NOT EXISTS Leverancier
     ,DatumAangemaakt Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
     ,DatumGewijzigd  Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
     ,CONSTRAINT      PK_Levrancier_Id        PRIMARY KEY CLUSTERED (Id)
+    ,CONSTRAINT      FK_Levrancier_ContactId_Contact_Id  FOREIGN KEY (fk_ContactId) REFERENCES Contact (Id)
 ) ENGINE=InnoDB   AUTO_INCREMENT=1;
 
 -- Step: 09
