@@ -79,6 +79,15 @@ new class extends Component {
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
+                <div class="mt-4">
+                    <flux:input
+                        :label="__('Role')"
+                        value="{{ auth()->user()->role ?? 'unknown' }}"
+                        disabled
+                        readonly
+                    />
+                </div>
+
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>
                         <flux:text class="mt-4">
