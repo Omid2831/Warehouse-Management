@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('leverancier.update', $leverancier->Id) }}"
+        <form method="POST" action="{{ route('leverancier.update', $leverancier->Id ?? $leverancier->id) }}"
             class="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
             @csrf
             @method('PUT')
@@ -93,7 +93,7 @@
                 <button type="submit"
                     class="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-150">Sla
                     op</button>
-                <a href="{{ route('leverancier.show', $leverancier->Id) }}"
+                <a href="{{ route('leverancier.show', $leverancier->Id ?? $leverancier->id) }}"
                     class="px-5 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-150">Annuleer</a>
             </div>
         </form>
