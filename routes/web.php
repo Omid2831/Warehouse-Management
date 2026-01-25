@@ -8,49 +8,76 @@ use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\AllergeenController;
 use App\Http\Controllers\LeverancierController;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+/*
+|--------------------------------------------------------------------------
+| Authenticated User Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+});
 
-// Magazijn Overview
-Route::get('magazijn/index', [MagazijnController::class, 'index'])->name('magazijn.index');
+// ADMIN ROUTES ONLY
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->as('admin.')
+    ->group(function () {
 
-// allergeen info
-Route::get('/magazijn/{id}/allergeenInfo', [MagazijnController::class, 'allergeenInfo'])->name('magazijn.allergeenInfo');
-// Leverancier info
-Route::get('/magazijn/{id}/leverantieInfo', [MagazijnController::class, 'leverantieInfo'])->name('magazijn.leverantieInfo');
+    /*
+    |--------------------------------------------------
+    | Magazijn
+    |--------------------------------------------------
+    */
+        Route::prefix('magazijn')->as('magazijn.')->group(function () {
+            Route::get('/', [MagazijnController::class, 'index'])->name('index');
+            Route::get('{id}/allergeen-info', [MagazijnController::class, 'allergeenInfo'])->name('allergeenInfo');
+            Route::get('{id}/leverantie-info', [MagazijnController::class, 'leverantieInfo'])->name('leverantieInfo');
+        });
 
+    /*
+    |--------------------------------------------------
+    | Allergeen (CRUD)
+    |--------------------------------------------------
+    */
+        Route::prefix('allergeen')->as('allergeen.')->group(function () {
+            Route::get('/', [AllergeenController::class, 'index'])->name('index');
+            Route::get('create', [AllergeenController::class, 'create'])->name('create');
+            Route::post('/', [AllergeenController::class, 'store'])->name('store');
+            Route::get('{id}/edit', [AllergeenController::class, 'edit'])->name('edit');
+            Route::put('{id}', [AllergeenController::class, 'update'])->name('update');
+            Route::delete('{id}', [AllergeenController::class, 'destroy'])->name('destroy');
+        });
 
-// Allergeen Overview
-Route::get('/allergeen', [AllergeenController::class, 'index'])->name('allergeen.index');
+    /*
+    |--------------------------------------------------
+    | Leverancier
+    |--------------------------------------------------
+    */
+        Route::prefix('leverancier')->as('leverancier.')->group(function () {
+            Route::get('/', [LeverancierController::class, 'index'])->name('index');
+            Route::get('{leverancier}', [LeverancierController::class, 'show'])->name('show');
+        });
 
-// Allergeen Create
-Route::get('/allergeen/create', [AllergeenController::class, 'create'])->name('allergeen.create');
-Route::post('/allergeen/store', [AllergeenController::class, 'store'])->name('allergeen.store');
-
-// Allergeen Delete
-Route::delete('/allergeen/{id}', [AllergeenController::class, 'destroy'])->name('allergeen.destroy');
-
-// Show edit form
-Route::get('/allergeen/{id}/edit', [AllergeenController::class, 'edit'])->name('allergeen.edit');
-
-// Handle update (form submission)
-Route::put('/allergeen/{id}', [AllergeenController::class, 'update'])->name('allergeen.update');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-
-Route::get('/leveringProduct/{id}', [LeveringController::class, 'show'])->name('levering.show');
-Route::post('/leveringProduct/{id}', [LeveringController::class, 'store'])->name('levering.store');
-
-
-// leverancier Overview
-Route::get('/leverancier/index', [LeverancierController::class, 'index'])->name('leverancier.index');
-// Leverancier Show (implicit model binding)
-Route::get('/leverancier/{leverancier}', [LeverancierController::class, 'show'])->name('leverancier.show');
+    /*
+    |--------------------------------------------------
+    | Levering
+    |--------------------------------------------------
+    */
+        Route::prefix('levering')->as('levering.')->group(function () {
+            Route::get('{id}', [LeveringController::class, 'show'])->name('show');
+            Route::post('{id}', [LeveringController::class, 'store'])->name('store');
+        });
+    });
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
