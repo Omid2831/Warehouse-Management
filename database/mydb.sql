@@ -267,6 +267,41 @@ CREATE TABLE IF NOT EXISTS ProductPerLeverancier
     ,CONSTRAINT                     FK_ProductPerLeverancier_LeverancierId_Leverancier_Id  FOREIGN KEY (LeverancierId) REFERENCES Leverancier (Id)
 ) ENGINE=InnoDB   AUTO_INCREMENT=1;
 
+-- Step: 11
+-- Goal: Fill table ProductPerLeverancier with data
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   10-12-2025      Omid Mhr       Requested new insert
+-- **********************************************************************************
+INSERT INTO ProductPerLeverancier
+(
+     LeverancierId
+    ,ProductID
+    ,DatumLevering
+    ,Aantal
+    ,DatumEerstVolgendeLevering
+)
+VALUES
+ (1, 1, '2024-10-09', 23, '2024-10-16')
+,(1, 1, '2024-10-18', 21, '2024-10-25')
+,(1, 2, '2024-10-09', 12, '2024-10-16')
+,(1, 3, '2024-10-10', 11, '2024-10-17')
+,(2, 4, '2024-10-14', 16, '2024-10-21')
+,(2, 4, '2024-10-21', 23, '2024-10-28')
+,(2, 5, '2024-10-14', 45, '2024-10-21')
+,(2, 6, '2024-10-14', 30, '2024-10-21')
+,(3, 7, '2024-10-12', 12, '2024-10-19')
+,(3, 7, '2024-10-19', 23, '2024-10-26')
+,(3, 8, '2024-10-10', 12, '2024-10-17')
+,(3, 9, '2024-10-11', 1, '2024-10-18')
+,(4, 10, '2024-10-16', 24, '2024-10-30')
+,(5, 11, '2024-10-10', 47, '2024-10-17')
+,(5, 11, '2024-10-19', 60, '2024-10-26')
+,(5, 12, '2024-10-11', 45, NULL)
+,(5, 13, '2024-10-12', 23, NULL);
+
+
 -- Step: 12
 -- Goal: Create a new table ProductPerAllergeen
 -- **********************************************************************************
