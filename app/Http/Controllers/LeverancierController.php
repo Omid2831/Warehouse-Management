@@ -117,6 +117,23 @@ class LeverancierController extends Controller
             'stad' => 'required|string|max:60',
         ]);
 
+        // Scenario_02: Simulate technical failure for specific condition
+        // If leverancier is "De Bron" and trying to change Mobiel to 06-39398825
+        if ($leverancier->Naam === 'De Bron' && $request->input('mobiel') === '06-39398825') {
+            Log::warning('Leverancier update prevented (Scenario_02 simulated failure)', [
+                'leverancierId' => $leverancierId,
+                'leverancier' => $leverancier->Naam,
+            ]);
+
+            return back()
+                ->withInput()
+                ->with([
+                    'error' => 'Door een technische storing is het niet mogelijk de wijziging door te voeren. Probeer het op een later moment nog eens',
+                    'redirect_to' => route('leverancier.show', $leverancierId),
+                ]);
+        }
+
+        // Scenario_01: Normal successful update
         $updated = $this->leverancierModel->updateLeverancierAndContact($leverancierId, $request->only([
             'naam',
             'contactpersoon',
@@ -136,7 +153,7 @@ class LeverancierController extends Controller
 
         return redirect()
             ->route('leverancier.show', $leverancierId)
-            ->with('success', 'Leveranciergegevens zijn opgeslagen.');
+            ->with('success', 'De wijzigingen zijn doorgevoerd');
     }
 
     /**
