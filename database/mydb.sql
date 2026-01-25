@@ -158,62 +158,16 @@ VALUES
     ,(13, 5, 20);
 
 -- Step: 08
--- Goal: Create a new table Leverancier
--- **********************************************************************************
--- Version    Date:        Author:         Description:
--- ******* ********** **************** ******************
---    01   10-12-2025      Omid Mhr       Requested new table
--- **********************************************************************************
-
-DROP TABLE IF EXISTS ProductPerLeverancier;
-DROP TABLE IF EXISTS Contact;
-DROP TABLE IF EXISTS Leverancier;
-
-CREATE TABLE IF NOT EXISTS Leverancier
-(
-     Id                 SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
-    ,fk_ContactId       SMALLINT             UNSIGNED        NOT NULL
-    ,Naam               VARCHAR(60)                          NOT NULL
-    ,Contactpersoon     VARCHAR(60)                          NOT NULL
-    ,Leveranciernummer  VARCHAR(11)                          NOT NULL
-    ,Mobiel             VARCHAR(11)                          NOT NULL
-    ,IsActief           BIT                                  NOT NULL      DEFAULT 1
-    ,Opmerkingen        VARCHAR(255)                             NULL      DEFAULT NULL
-    ,DatumAangemaakt Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
-    ,DatumGewijzigd  Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
-    ,CONSTRAINT      PK_Levrancier_Id        PRIMARY KEY CLUSTERED (Id)
-    ,CONSTRAINT      FK_Levrancier_ContactId_Contact_Id  FOREIGN KEY (fk_ContactId) REFERENCES Contact (Id)
-) ENGINE=InnoDB   AUTO_INCREMENT=1;
-
--- Step: 09
--- Goal: Fill table Leverancier with data
--- **********************************************************************************
--- Version    Date:        Author:         Description:
--- ******* ********** **************** ******************
---    01   10-12-2025      Omid Mhr       Requested new insert
--- **********************************************************************************
-INSERT INTO Leverancier
-(
-     Naam
-    ,Contactpersoon
-    ,Leveranciernummer
-    ,Mobiel
-)
-VALUES
-     ('Venco', 'Bert van Linge', 'L1029384719', '06-28493827')
-    ,('Astra Sweets', 'Jasper del Monte', 'L1029284315', '06-39398734')
-    ,('Haribo', 'Sven Stalman', 'L1029324748', '06-24383291')
-    ,('Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823')
-    ,('De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
-    ,('Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
-
--- Step: updated
 -- Goal: Create a new table Contact
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
 -- ******* ********** **************** ******************
 --    01   1-25-2026      Omid Mhr       Requested new table
 -- **********************************************************************************
+DROP TABLE IF EXISTS ProductPerLeverancier;
+DROP TABLE IF EXISTS Leverancier;
+DROP TABLE IF EXISTS Contact;
+
 CREATE TABLE IF NOT EXISTS Contact
 (
         Id                  SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
@@ -228,8 +182,7 @@ CREATE TABLE IF NOT EXISTS Contact
         ,CONSTRAINT         PK_Contact_Id        PRIMARY KEY CLUSTERED (Id)
 ) ENGINE=InnoDB   AUTO_INCREMENT=1;
 
--- Step: updated
--- Goal: Fill table Contact with data
+-- Step: Fill table Contact with data
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
 -- ******* ********** **************** ******************
@@ -250,13 +203,54 @@ VALUES
     ,('Leon van Bonstraat', 213, '145XC', 'Lunteren')
     ,('Bea van Lingenlaan', 234, '2197FG', 'Sint Pancras');
 
--- Step: 10
--- Goal: Create a new table ProductPerLeverancier
+-- Step: 09
+-- Goal: Create a new table Leverancier
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
 -- ******* ********** **************** ******************
 --    01   10-12-2025      Omid Mhr       Requested new table
 -- **********************************************************************************
+
+CREATE TABLE IF NOT EXISTS Leverancier
+(
+     Id                 SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
+    ,fk_ContactId       SMALLINT             UNSIGNED        NOT NULL
+    ,Naam               VARCHAR(60)                          NOT NULL
+    ,Contactpersoon     VARCHAR(60)                          NOT NULL
+    ,Leveranciernummer  VARCHAR(11)                          NOT NULL
+    ,Mobiel             VARCHAR(11)                          NOT NULL
+    ,IsActief           BIT                                  NOT NULL      DEFAULT 1
+    ,Opmerkingen        VARCHAR(255)                             NULL      DEFAULT NULL
+    ,DatumAangemaakt Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+    ,DatumGewijzigd  Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+    ,CONSTRAINT      PK_Levrancier_Id        PRIMARY KEY CLUSTERED (Id)
+    ,CONSTRAINT      FK_Levrancier_ContactId_Contact_Id  FOREIGN KEY (fk_ContactId) REFERENCES Contact(Id)
+) ENGINE=InnoDB   AUTO_INCREMENT=1;
+
+-- Step: 10
+-- Goal: Fill table Leverancier with data
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   10-12-2025      Omid Mhr       Requested new insert
+-- **********************************************************************************
+INSERT INTO Leverancier
+(
+     fk_ContactId
+    ,Naam
+    ,Contactpersoon
+    ,Leveranciernummer
+    ,Mobiel
+)
+VALUES
+     (1, 'Venco', 'Bert van Linge', 'L1029384719', '06-28493827')
+    ,(2, 'Astra Sweets', 'Jasper del Monte', 'L1029284315', '06-39398734')
+    ,(3, 'Haribo', 'Sven Stalman', 'L1029324748', '06-24383291')
+    ,(4, 'Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823')
+    ,(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
+    ,(6, 'Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
+
+-- Step: 11
 CREATE TABLE IF NOT EXISTS ProductPerLeverancier
 (
      Id                             MEDIUMINT       UNSIGNED          NOT NULL      AUTO_INCREMENT
@@ -272,40 +266,6 @@ CREATE TABLE IF NOT EXISTS ProductPerLeverancier
     ,CONSTRAINT                     PK_ProductPerLeverancier_Id       PRIMARY KEY CLUSTERED (Id)
     ,CONSTRAINT                     FK_ProductPerLeverancier_LeverancierId_Leverancier_Id  FOREIGN KEY (LeverancierId) REFERENCES Leverancier (Id)
 ) ENGINE=InnoDB   AUTO_INCREMENT=1;
-
--- Step: 11
--- Goal: Fill table ProductPerLeverancier with data
--- **********************************************************************************
--- Version    Date:        Author:         Description:
--- ******* ********** **************** ******************
---    01   10-12-2025      Omid Mhr       Requested new insert
--- **********************************************************************************
-INSERT INTO ProductPerLeverancier
-(
-     LeverancierId
-    ,ProductID
-    ,DatumLevering
-    ,Aantal
-    ,DatumEerstVolgendeLevering
-)
-VALUES
- (1, 1, '2024-10-09', 23, '2024-10-16')
-,(1, 1, '2024-10-18', 21, '2024-10-25')
-,(1, 2, '2024-10-09', 12, '2024-10-16')
-,(1, 3, '2024-10-10', 11, '2024-10-17')
-,(2, 4, '2024-10-14', 16, '2024-10-21')
-,(2, 4, '2024-10-21', 23, '2024-10-28')
-,(2, 5, '2024-10-14', 45, '2024-10-21')
-,(2, 6, '2024-10-14', 30, '2024-10-21')
-,(3, 7, '2024-10-12', 12, '2024-10-19')
-,(3, 7, '2024-10-19', 23, '2024-10-26')
-,(3, 8, '2024-10-10', 12, '2024-10-17')
-,(3, 9, '2024-10-11', 1, '2024-10-18')
-,(4, 10, '2024-10-16', 24, '2024-10-30')
-,(5, 11, '2024-10-10', 47, '2024-10-17')
-,(5, 11, '2024-10-19', 60, '2024-10-26')
-,(5, 12, '2024-10-11', 45, NULL)
-,(5, 13, '2024-10-12', 23, NULL);
 
 -- Step: 12
 -- Goal: Create a new table ProductPerAllergeen
