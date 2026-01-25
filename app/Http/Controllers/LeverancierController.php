@@ -22,8 +22,8 @@ class LeverancierController extends Controller
     public function index()
     {
         try {
-            // Paginate leveranciers server-side (4 per page)
-            $leverancierOverzicht = $this->leverancierModel->getLeveranciersPaginated(4);
+            // Paginate leveranciers via stored procedure (4 per page)
+            $leverancierOverzicht = $this->leverancierModel->getLeveranciersPaginatedViaSp(4);
 
             if ($leverancierOverzicht->isEmpty()) {
                 abort(404, 'Geen leveranciers gevonden');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class LeverancierModel extends Model
@@ -15,22 +16,26 @@ class LeverancierModel extends Model
         return $result;
     }
 
-    public function getLeveranciersPaginated(int $perPage = 4)
+    public function getLeveranciersPaginatedViaSp(int $perPage = 4): LengthAwarePaginator
     {
-        // Server-side pagination with aggregate counts
-        return DB::table('Leverancier as L')
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        // Fetch current page rows via stored procedure (pageNumber is 1-based)
+        $rows = collect(DB::select('CALL sp_getLeverancierInfoPaginated(?, ?)', [$page, $perPage]));
+
+        // Total distinct leveranciers for accurate pagination metadata
+        $total = DB::table('Leverancier as L')
             ->join('ProductPerLeverancier as PPL', 'L.Id', '=', 'PPL.LeverancierId')
-            ->select(
-                'L.Id',
-                'L.Naam',
-                'L.Contactpersoon',
-                'L.Leveranciernummer',
-                'L.Mobiel',
-                DB::raw('COUNT(DISTINCT PPL.ProductId) as AantalVerschillendeProducten')
-            )
-            ->groupBy('L.Id', 'L.Naam', 'L.Contactpersoon', 'L.Leveranciernummer', 'L.Mobiel')
-            ->orderBy('L.Naam')
-            ->paginate($perPage);
+            ->distinct('L.Id')
+            ->count('L.Id');
+
+        return new LengthAwarePaginator(
+            $rows,
+            $total,
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
     }
     public function getProductsByLeverancierId($id)
     {
