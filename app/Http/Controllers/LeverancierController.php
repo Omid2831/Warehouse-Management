@@ -117,16 +117,26 @@ class LeverancierController extends Controller
             'stad' => 'required|string|max:60',
         ]);
 
-        Log::warning('Leverancier update prevented due to simulated technical issue', [
-            'leverancierId' => $leverancierId,
-        ]);
+        $updated = $this->leverancierModel->updateLeverancierAndContact($leverancierId, $request->only([
+            'naam',
+            'contactpersoon',
+            'leveranciernummer',
+            'mobiel',
+            'straat',
+            'huisnummer',
+            'postcode',
+            'stad',
+        ]));
 
-        return back()
-            ->withInput()
-            ->with([
-                'error' => 'Door een technische storing is het niet mogelijk de wijziging door te voeren. Probeer het op een later moment nog eens',
-                'redirect_to' => route('leverancier.show', $leverancierId),
-            ]);
+        if (!$updated) {
+            return back()
+                ->withInput()
+                ->with('error', 'Bijwerken van leveranciergegevens is mislukt. Probeer het later opnieuw.');
+        }
+
+        return redirect()
+            ->route('leverancier.show', $leverancierId)
+            ->with('success', 'Leveranciergegevens zijn opgeslagen.');
     }
 
     /**

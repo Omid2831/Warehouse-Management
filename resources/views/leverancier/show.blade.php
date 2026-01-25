@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <h1 class="text-2xl font-bold text-gray-800">Leverancier Details</h1>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('leverancier.edit', $leverancier->Id) }}"
+                <a href="{{ route('leverancier.edit', $leverancier->Id ?? $leverancier->id) }}"
                     class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors duration-150">Wijzig</a>
                 <a href="{{ url()->previous() }}"
                     class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-150">Terug</a>
@@ -17,6 +17,12 @@
         @if (session('error'))
             <div class="mx-6 my-4 bg-red-50 border border-red-300 text-red-800 px-4 py-3 rounded">
                 {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="mx-6 my-4 bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded">
+                {{ session('success') }}
             </div>
         @endif
 
