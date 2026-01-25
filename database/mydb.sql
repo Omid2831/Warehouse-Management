@@ -204,6 +204,49 @@ VALUES
     ,('De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
     ,('Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
 
+-- Step: updated
+-- Goal: Create a new table Contact
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   1-25-2026      Omid Mhr       Requested new table
+-- **********************************************************************************
+CREATE TABLE IF NOT EXISTS Contact
+(
+        Id                  SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
+        ,Straat             VARCHAR(60)                          NOT NULL
+        ,Huisnummer         INT                                  NOT NULL
+        ,Postcode           VARCHAR(10)                          NOT NULL
+        ,Stad               VARCHAR(60)                          NOT NULL
+        ,IsActief           BIT                                  NOT NULL      DEFAULT 1
+        ,Opmerkingen        VARCHAR(255)                             NULL      DEFAULT NULL
+        ,DatumAangemaakt    Datetime(6)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+        ,DatumGewijzigd     Datetime(6)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+        ,CONSTRAINT         PK_Contact_Id        PRIMARY KEY CLUSTERED (Id)
+) ENGINE=InnoDB   AUTO_INCREMENT=1;
+
+-- Step: updated
+-- Goal: Fill table Contact with data
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   1-25-2026      Omid Mhr       Requested new insert
+-- **********************************************************************************
+INSERT INTO Contact
+(
+     Straat
+    ,Huisnummer
+    ,Postcode
+    ,Stad
+)
+VALUES
+     ('Van Gilslaan', 34, '1045CB', 'Hilvarenbeek')
+    ,('Den Dolderpad', 2, '1067RC', 'Utrecht')
+    ,('Fredo Raalteweg', 257, '1236OP', 'Nijmegen')
+    ,('Bertrand Russellhof', 21, '2034AP', 'Den Haag')
+    ,('Leon van Bonstraat', 213, '145XC', 'Lunteren')
+    ,('Bea van Lingenlaan', 234, '2197FG', 'Sint Pancras');
+
 -- Step: 10
 -- Goal: Create a new table ProductPerLeverancier
 -- **********************************************************************************
