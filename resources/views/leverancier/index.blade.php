@@ -16,8 +16,9 @@
                     <th class="border border-gray-400 px-4 py-2">ContactPersoon</th>
                     <th class="border border-gray-400 px-4 py-2">leveranciernummer</th>
                     <th class="border border-gray-400 px-4 py-2">mobiel</th>
-                    <th class="border border-gray-400 px-4 py-2">Aantal verschillende producten </th>
-                    <th class="border border-gray-400 px-4 py-2">Toonproducten</th>
+                    {{-- <th class="border border-gray-400 px-4 py-2">Aantal verschillende producten </th> --}}
+                    {{-- <th class="border border-gray-400 px-4 py-2">Toonproducten</th> --}}
+                    <th class="border border-gray-400 px-4 py-2">details</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,17 +28,27 @@
                         <td class="border border-gray-400 px-4 py-2">{{ $leverancier->Contactpersoon }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $leverancier->Leveranciernummer }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $leverancier->Mobiel }}</td>
-                        <td class="border border-gray-400 px-4 py-2">{{ $leverancier->AantalVerschillendeProducten }}</td>
-                        <td class="border border-gray-400 px-4 py-2">
+                        {{-- <td class="border border-gray-400 px-4 py-2">{{ $leverancier->AantalVerschillendeProducten }}</td> --}}
+                        {{-- <td class="border border-gray-400 px-4 py-2">
                             <a href="{{ route('leverancier.show', $leverancier->Id) }}"
                                 class="inline-flex items-center text-blue-600 hover:text-blue-800">
                                 <i class="bx bxs-box bx-bounce text-xl" aria-hidden="true"></i>
                                 <span class="sr-only">Toon producten van {{ $leverancier->Naam }}</span>
                             </a>
-                        </td>
+                        </td> --}}
+                        <td class="border border-gray-400 px-4 py-2">
+                            <a href="{{ route('leverancier.show', $leverancier->Id) }}"
+                                class="inline-flex items-center text-green-600 hover:text-green-800">
+                                <i class="bx bxs-detail bx-bounce text-xl" aria-hidden="true"></i>
+                                <span class="sr-only">Bekijk details van {{ $leverancier->Naam }}</span>
+                            </a>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4">
+        {{ $leveranciers->links() }}
     </div>
 @endsection
