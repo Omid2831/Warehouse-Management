@@ -49,7 +49,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $redirectTo = strtolower($user->role ?? '') === 'admin' && Route::has('admin.dashboard')
+            ? route('admin.dashboard', absolute: false)
+            : route('dashboard', absolute: false);
+
+        $this->redirectIntended(default: $redirectTo, navigate: true);
     }
 
     /**
