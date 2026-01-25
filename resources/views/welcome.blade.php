@@ -28,19 +28,19 @@
                         @php($userRole = strtolower(trim(auth()->user()->role ?? '')))
                         @if ($userRole === 'admin')
                             <a
-                                href="{{ route('admin.leverancier.index') }}"
+                                href="{{ route('leverancier.index') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                             >
                                 Leverancier
                             </a>
                             <a
-                                href="{{ route('admin.allergeen.index') }}"
+                                href="{{ route('allergeen.index') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                             >
                                 allergeen
                             </a>
                             <a
-                                href="{{ route('admin.magazijn.index') }}"
+                                href="{{ route('magazijn.index') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                             >
                                 magazijnen

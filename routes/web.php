@@ -29,8 +29,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // ADMIN ROUTES ONLY
 Route::middleware(['auth', 'role:admin'])
-    ->prefix('admin')
-    ->as('admin.')
     ->group(function () {
 
     /*
