@@ -3,6 +3,7 @@
 use Livewire\Volt\Volt;
 use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LeveringController;
 use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\AllergeenController;
@@ -24,6 +25,7 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Regular user dashboard
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 });
 
@@ -31,7 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'role:admin'])
     ->group(function () {
 
-    /*
+        /*
     |--------------------------------------------------
     | Magazijn
     |--------------------------------------------------
@@ -42,7 +44,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{id}/leverantie-info', [MagazijnController::class, 'leverantieInfo'])->name('leverantieInfo');
         });
 
-    /*
+        /*
     |--------------------------------------------------
     | Allergeen (CRUD)
     |--------------------------------------------------
@@ -56,7 +58,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::delete('{id}', [AllergeenController::class, 'destroy'])->name('destroy');
         });
 
-    /*
+        /*
     |--------------------------------------------------
     | Leverancier
     |--------------------------------------------------
@@ -66,7 +68,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{leverancier}', [LeverancierController::class, 'show'])->name('show');
         });
 
-    /*
+        /*
     |--------------------------------------------------
     | Levering
     |--------------------------------------------------
@@ -75,6 +77,13 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{id}', [LeveringController::class, 'show'])->name('show');
             Route::post('{id}', [LeveringController::class, 'store'])->name('store');
         });
+
+        /*
+    |--------------------------------------------------
+    | Administrator Dashboard
+    |--------------------------------------------------
+    */
+        Route::get('/administrator/dashboard', [AdminController::class, 'dashboard'])->name('administrator.dashboard');
     });
 
 Route::middleware(['auth'])->group(function () {
