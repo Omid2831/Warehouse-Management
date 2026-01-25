@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 class LeverancierModel extends Model
 {
     protected $table = 'Leverancier';
+    protected $primaryKey = 'Id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false;
 
     public function getAllLeverancierData()
     {
@@ -36,6 +40,25 @@ class LeverancierModel extends Model
             $page,
             ['path' => LengthAwarePaginator::resolveCurrentPath()]
         );
+    }
+
+    public function getLeverancierWithContact(int $leverancierId)
+    {
+        return DB::table('Leverancier as L')
+            ->join('Contact as C', 'L.fk_ContactId', '=', 'C.Id')
+            ->select(
+                'L.Id',
+                'L.Naam',
+                'L.Contactpersoon',
+                'L.Leveranciernummer',
+                'L.Mobiel',
+                'C.Straat',
+                'C.Huisnummer',
+                'C.Postcode',
+                'C.Stad'
+            )
+            ->where('L.Id', $leverancierId)
+            ->first();
     }
     public function getProductsByLeverancierId($id)
     {
