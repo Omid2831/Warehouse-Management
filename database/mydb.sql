@@ -158,6 +158,52 @@ VALUES
     ,(13, 5, 20);
 
 -- Step: 08
+-- Goal: Create a new table Contact
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   1-25-2026      Omid Mhr       Requested new table
+-- **********************************************************************************
+DROP TABLE IF EXISTS ProductPerLeverancier;
+DROP TABLE IF EXISTS Leverancier;
+DROP TABLE IF EXISTS Contact;
+
+CREATE TABLE IF NOT EXISTS Contact
+(
+        Id                  SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
+        ,Straat             VARCHAR(60)                          NOT NULL
+        ,Huisnummer         INT                                  NOT NULL
+        ,Postcode           VARCHAR(10)                          NOT NULL
+        ,Stad               VARCHAR(60)                          NOT NULL
+        ,IsActief           BIT                                  NOT NULL      DEFAULT 1
+        ,Opmerkingen        VARCHAR(255)                             NULL      DEFAULT NULL
+        ,DatumAangemaakt    Datetime(6)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+        ,DatumGewijzigd     Datetime(6)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+        ,CONSTRAINT         PK_Contact_Id        PRIMARY KEY CLUSTERED (Id)
+) ENGINE=InnoDB   AUTO_INCREMENT=1;
+
+-- Step: Fill table Contact with data
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   1-25-2026      Omid Mhr       Requested new insert
+-- **********************************************************************************
+INSERT INTO Contact
+(
+     Straat
+    ,Huisnummer
+    ,Postcode
+    ,Stad
+)
+VALUES
+     ('Van Gilslaan', 34, '1045CB', 'Hilvarenbeek')
+    ,('Den Dolderpad', 2, '1067RC', 'Utrecht')
+    ,('Fredo Raalteweg', 257, '1236OP', 'Nijmegen')
+    ,('Bertrand Russellhof', 21, '2034AP', 'Den Haag')
+    ,('Leon van Bonstraat', 213, '145XC', 'Lunteren')
+    ,('Bea van Lingenlaan', 234, '2197FG', 'Sint Pancras');
+
+-- Step: 09
 -- Goal: Create a new table Leverancier
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
@@ -165,12 +211,10 @@ VALUES
 --    01   10-12-2025      Omid Mhr       Requested new table
 -- **********************************************************************************
 
-DROP TABLE IF EXISTS ProductPerLeverancier;
-DROP TABLE IF EXISTS Leverancier;
-
 CREATE TABLE IF NOT EXISTS Leverancier
 (
      Id                 SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
+    ,fk_ContactId       SMALLINT             UNSIGNED        NOT NULL
     ,Naam               VARCHAR(60)                          NOT NULL
     ,Contactpersoon     VARCHAR(60)                          NOT NULL
     ,Leveranciernummer  VARCHAR(11)                          NOT NULL
@@ -180,9 +224,10 @@ CREATE TABLE IF NOT EXISTS Leverancier
     ,DatumAangemaakt Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
     ,DatumGewijzigd  Datetime(6)                             NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
     ,CONSTRAINT      PK_Levrancier_Id        PRIMARY KEY CLUSTERED (Id)
+    ,CONSTRAINT      FK_Levrancier_ContactId_Contact_Id  FOREIGN KEY (fk_ContactId) REFERENCES Contact(Id)
 ) ENGINE=InnoDB   AUTO_INCREMENT=1;
 
--- Step: 09
+-- Step: 10
 -- Goal: Fill table Leverancier with data
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
@@ -191,26 +236,21 @@ CREATE TABLE IF NOT EXISTS Leverancier
 -- **********************************************************************************
 INSERT INTO Leverancier
 (
-     Naam
+     fk_ContactId
+    ,Naam
     ,Contactpersoon
     ,Leveranciernummer
     ,Mobiel
 )
 VALUES
-     ('Venco', 'Bert van Linge', 'L1029384719', '06-28493827')
-    ,('Astra Sweets', 'Jasper del Monte', 'L1029284315', '06-39398734')
-    ,('Haribo', 'Sven Stalman', 'L1029324748', '06-24383291')
-    ,('Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823')
-    ,('De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
-    ,('Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
+     (1, 'Venco', 'Bert van Linge', 'L1029384719', '06-28493827')
+    ,(2, 'Astra Sweets', 'Jasper del Monte', 'L1029284315', '06-39398734')
+    ,(3, 'Haribo', 'Sven Stalman', 'L1029324748', '06-24383291')
+    ,(4, 'Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823')
+    ,(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
+    ,(6, 'Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
 
--- Step: 10
--- Goal: Create a new table ProductPerLeverancier
--- **********************************************************************************
--- Version    Date:        Author:         Description:
--- ******* ********** **************** ******************
---    01   10-12-2025      Omid Mhr       Requested new table
--- **********************************************************************************
+-- Step: 11
 CREATE TABLE IF NOT EXISTS ProductPerLeverancier
 (
      Id                             MEDIUMINT       UNSIGNED          NOT NULL      AUTO_INCREMENT
@@ -260,6 +300,7 @@ VALUES
 ,(5, 11, '2024-10-19', 60, '2024-10-26')
 ,(5, 12, '2024-10-11', 45, NULL)
 ,(5, 13, '2024-10-12', 23, NULL);
+
 
 -- Step: 12
 -- Goal: Create a new table ProductPerAllergeen

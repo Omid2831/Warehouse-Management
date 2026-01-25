@@ -22,15 +22,13 @@ class LeverancierController extends Controller
     public function index()
     {
         try {
-            // get the leverancier data from the database
-            $leverancierOverzicht = $this->leverancierModel->getAllLeverancierData();
-            // if there is no data in leverancierOverzicht then show us 404 Error
-            if (empty($leverancierOverzicht)) {
-                // Will throw HttpException(404) and stop execution
+            // Paginate leveranciers via stored procedure (4 per page)
+            $leverancierOverzicht = $this->leverancierModel->getLeveranciersPaginatedViaSp(4);
+
+            if ($leverancierOverzicht->isEmpty()) {
                 abort(404, 'Geen leveranciers gevonden');
             }
 
-            // Returning the data to the view
             return view('leverancier.index', [
                 'title' => 'Leverancier Overzicht',
                 'leveranciers' => $leverancierOverzicht,

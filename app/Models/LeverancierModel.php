@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class LeverancierModel extends Model
@@ -13,6 +14,28 @@ class LeverancierModel extends Model
     {
         $result = DB::select('CALL sp_getAllLeverancierOverzicht()');
         return $result;
+    }
+
+    public function getLeveranciersPaginatedViaSp(int $perPage = 4): LengthAwarePaginator
+    {
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        // Fetch current page rows via stored procedure (pageNumber is 1-based)
+        $rows = collect(DB::select('CALL sp_getLeverancierInfoPaginated(?, ?)', [$page, $perPage]));
+
+        // Total distinct leveranciers for accurate pagination metadata
+        $total = DB::table('Leverancier as L')
+            ->join('ProductPerLeverancier as PPL', 'L.Id', '=', 'PPL.LeverancierId')
+            ->distinct('L.Id')
+            ->count('L.Id');
+
+        return new LengthAwarePaginator(
+            $rows,
+            $total,
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
     }
     public function getProductsByLeverancierId($id)
     {
