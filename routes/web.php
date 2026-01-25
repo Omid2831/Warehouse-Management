@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Volt;
 use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LeveringController;
@@ -25,8 +26,13 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Regular user dashboard
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    // Regular user dashboard - redirect admins to their dashboard
+    Route::get('/dashboard', function () {
+        if (Auth::user() && strtolower(Auth::user()->role) === 'admin') {
+            return redirect()->route('administrator.dashboard');
+        }
+        return view('dashboard');
+    })->name('dashboard');
 });
 
 // ADMIN ROUTES ONLY
