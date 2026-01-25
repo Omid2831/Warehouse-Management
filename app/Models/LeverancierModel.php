@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 class LeverancierModel extends Model
 {
     protected $table = 'Leverancier';
+    protected $primaryKey = 'Id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false;
 
     public function getAllLeverancierData()
     {
@@ -37,11 +41,63 @@ class LeverancierModel extends Model
             ['path' => LengthAwarePaginator::resolveCurrentPath()]
         );
     }
+
+    public function getLeverancierWithContact(int $leverancierId)
+    {
+        return DB::table('Leverancier as L')
+            ->join('Contact as C', 'L.fk_ContactId', '=', 'C.Id')
+            ->select(
+                'L.fk_ContactId as contact_id',
+                'L.Id as Id',
+                'L.Id as id',
+                'L.Naam as Naam',
+                'L.Contactpersoon as Contactpersoon',
+                'L.Leveranciernummer as Leveranciernummer',
+                'L.Mobiel as Mobiel',
+                'C.Straat as Straat',
+                'C.Huisnummer as Huisnummer',
+                'C.Postcode as Postcode',
+                'C.Stad as Stad'
+            )
+            ->where('L.Id', $leverancierId)
+            ->first();
+    }
     public function getProductsByLeverancierId($id)
     {
         return DB::select('CALL sp_getProductsByLeverancierId(?)', [$id]);
     }
 
+
+    public function updateLeverancierAndContact(int $leverancierId, array $payload): bool
+    {
+        $leverancier = DB::table('Leverancier')->select('fk_ContactId')->where('Id', $leverancierId)->first();
+
+        if (!$leverancier) {
+            return false;
+        }
+
+        return DB::transaction(function () use ($leverancierId, $leverancier, $payload) {
+            $leverancierUpdated = DB::table('Leverancier')
+                ->where('Id', $leverancierId)
+                ->update([
+                    'Naam' => $payload['naam'],
+                    'Contactpersoon' => $payload['contactpersoon'],
+                    'Leveranciernummer' => $payload['leveranciernummer'],
+                    'Mobiel' => $payload['mobiel'],
+                ]);
+
+            $contactUpdated = DB::table('Contact')
+                ->where('Id', $leverancier->fk_ContactId)
+                ->update([
+                    'Straat' => $payload['straat'],
+                    'Huisnummer' => $payload['huisnummer'],
+                    'Postcode' => $payload['postcode'],
+                    'Stad' => $payload['stad'],
+                ]);
+
+            return $leverancierUpdated !== false && $contactUpdated !== false;
+        });
+    }
     public function getLeverancierById($id)
     {
         $result = DB::select('SELECT * FROM Leverancier WHERE Id = ?', [$id]);
