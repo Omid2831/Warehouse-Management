@@ -10,18 +10,20 @@ CREATE PROCEDURE sp_getAllLeverancierOverzicht (
 BEGIN
 
     SELECT
-         L.Id
-        ,L.Naam AS Naam
-        ,L.Contactpersoon AS Contactpersoon
-        ,L.Leveranciernummer AS Leveranciernummer
-        ,L.Mobiel AS Mobiel
-        ,COUNT(DISTINCT PPL.ProductId) AS AantalVerschillendeProducten
-        ,ANY_VALUE(PPL.ProductId) AS ProductId
-        ,MAX(PPL.DatumEerstVolgendeLevering) AS DatumEerstVolgendeLevering
+        L.Id,
+        L.fk_ContactId AS ContactId,
+        L.Naam,
+        L.Contactpersoon,
+        L.Leveranciernummer,
+        L.Mobiel,
+        COUNT(DISTINCT PPL.ProductId) AS AantalVerschillendeProducten,
+        ANY_VALUE(PPL.ProductId) AS ProductId,
+        MAX(PPL.DatumEerstVolgendeLevering) AS DatumEerstVolgendeLevering
     FROM Leverancier AS L
-    INNER JOIN
-        ProductPerLeverancier AS PPL
-    ON L.ID = PPL.LeverancierId
+    LEFT JOIN ProductPerLeverancier AS PPL
+        ON L.Id = PPL.LeverancierId
+    LEFT JOIN Contact AS C
+        ON L.fk_ContactId = C.Id
     GROUP BY L.Id;
 
 

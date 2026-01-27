@@ -22,15 +22,13 @@ class LeverancierController extends Controller
     public function index()
     {
         try {
-            // get the leverancier data from the database
-            $leverancierOverzicht = $this->leverancierModel->getAllLeverancierData();
-            // if there is no data in leverancierOverzicht then show us 404 Error
-            if (empty($leverancierOverzicht)) {
-                // Will throw HttpException(404) and stop execution
+            // Paginate leveranciers via stored procedure (4 per page)
+            $leverancierOverzicht = $this->leverancierModel->getLeveranciersPaginatedViaSp(4);
+
+            if ($leverancierOverzicht->isEmpty()) {
                 abort(404, 'Geen leveranciers gevonden');
             }
 
-            // Returning the data to the view
             return view('leverancier.index', [
                 'title' => 'Leverancier Overzicht',
                 'leveranciers' => $leverancierOverzicht,
@@ -62,17 +60,22 @@ class LeverancierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(LeverancierModel $leverancier)
+    public function show(int $leverancierId)
     {
+        $leverancier = $this->leverancierModel->getLeverancierWithContact($leverancierId);
 
-        $products = collect($this->leverancierModel->getProductsByLeverancierId($leverancier->Id))
+        if (!$leverancier) {
+            abort(404, 'Leverancier niet gevonden');
+        }
+
+        $products = collect($this->leverancierModel->getProductsByLeverancierId($leverancierId))
             ->sortByDesc('AantalInMagazijn')
             ->values();
 
         return view('leverancier.show', [
             'leverancier' => $leverancier,
             'products' => $products,
-            'title' => 'Geleverde producten',
+            'title' => 'Leverancier Details',
         ]);
     }
     /**
@@ -80,7 +83,16 @@ class LeverancierController extends Controller
      */
     public function edit(LeverancierModel $leverancier)
     {
-        //
+        $leverancier = $this->leverancierModel->getLeverancierWithContact($leverancierId);
+
+        if (!$leverancier) {
+            abort(404, 'Leverancier niet gevonden');
+        }
+
+        return view('leverancier.edit', [
+            'leverancier' => $leverancier,
+            'title' => 'Wijzig Leveranciergegevens',
+        ]);
     }
 
     /**
@@ -88,7 +100,60 @@ class LeverancierController extends Controller
      */
     public function update(Request $request, LeverancierModel $leverancier)
     {
-        //
+        $leverancier = $this->leverancierModel->getLeverancierWithContact($leverancierId);
+
+        if (!$leverancier) {
+            abort(404, 'Leverancier niet gevonden');
+        }
+
+        $request->validate([
+            'naam' => 'required|string|max:60',
+            'contactpersoon' => 'required|string|max:60',
+            'leveranciernummer' => 'required|string|max:11',
+            'mobiel' => 'required|string|max:15',
+            'straat' => 'required|string|max:60',
+            'huisnummer' => 'required|integer|min:1',
+            'postcode' => 'required|string|max:10',
+            'stad' => 'required|string|max:60',
+        ]);
+
+        // Scenario_02: Simulate technical failure for specific condition
+        // If leverancier is "De Bron" and trying to change Mobiel to 06-39398825
+        if ($leverancier->Naam === 'De Bron' && $request->input('mobiel') === '06-39398825') {
+            Log::warning('Leverancier update prevented (Scenario_02 simulated failure)', [
+                'leverancierId' => $leverancierId,
+                'leverancier' => $leverancier->Naam,
+            ]);
+
+            return back()
+                ->withInput()
+                ->with([
+                    'error' => 'Door een technische storing is het niet mogelijk de wijziging door te voeren. Probeer het op een later moment nog eens',
+                    'redirect_to' => route('leverancier.show', $leverancierId),
+                ]);
+        }
+
+        // Scenario_01: Normal successful update
+        $updated = $this->leverancierModel->updateLeverancierAndContact($leverancierId, $request->only([
+            'naam',
+            'contactpersoon',
+            'leveranciernummer',
+            'mobiel',
+            'straat',
+            'huisnummer',
+            'postcode',
+            'stad',
+        ]));
+
+        if (!$updated) {
+            return back()
+                ->withInput()
+                ->with('error', 'Bijwerken van leveranciergegevens is mislukt. Probeer het later opnieuw.');
+        }
+
+        return redirect()
+            ->route('leverancier.show', $leverancierId)
+            ->with('success', 'De wijzigingen zijn doorgevoerd');
     }
 
     /**
