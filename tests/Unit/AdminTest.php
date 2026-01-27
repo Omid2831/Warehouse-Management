@@ -45,8 +45,10 @@ class AdminTest extends TestCase
         // ACT: Call the dashboard method
         $response = $this->controller->dashboard();
 
-        // ASSERT: Check it returns the administrator.dashboard view
-        $this->assertEquals('administrator.dashboard', $response->name());
+        // ASSERT: Check it returns a View instance
+        $this->assertIsObject($response);
+        // Verify the view name
+        $this->assertEquals('administrator.dashboard', $response->getName());
     }
 
     /**
@@ -76,8 +78,10 @@ class AdminTest extends TestCase
         // ACT: Call the manageUserRoles method
         $response = $this->controller->manageUserRoles();
 
-        // ASSERT: Verify the response
-        $this->assertEquals('administrator.dashboard', $response->name());
+        // ASSERT: Verify the response is a View instance
+        $this->assertIsObject($response);
+        // Verify it's the correct view
+        $this->assertEquals('administrator.dashboard', $response->getName());
 
         // Verify the view has the correct data
         $viewData = $response->getData();
