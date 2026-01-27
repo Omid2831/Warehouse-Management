@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeverancierModel;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -81,7 +80,7 @@ class LeverancierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LeverancierModel $leverancier)
+    public function edit(int $leverancierId)
     {
         $leverancier = $this->leverancierModel->getLeverancierWithContact($leverancierId);
 
@@ -98,7 +97,7 @@ class LeverancierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LeverancierModel $leverancier)
+    public function update(Request $request, int $leverancierId)
     {
         $leverancier = $this->leverancierModel->getLeverancierWithContact($leverancierId);
 
