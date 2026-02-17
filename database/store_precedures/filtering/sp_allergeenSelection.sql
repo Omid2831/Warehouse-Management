@@ -15,11 +15,6 @@ BEGIN
         SET MESSAGE_TEXT = 'Please provide an allergen name.';
     END IF;
 
-    --  Validate format
-    IF p_allergeenNaam NOT REGEXP '^[A-Za-z ]+$' THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Invalid input. Please enter a valid allergen name.';
-    END IF;
 
     -- Check if allergen exists
     IF NOT EXISTS (SELECT 1 FROM Allergeen WHERE Naam = p_allergeenNaam) THEN
