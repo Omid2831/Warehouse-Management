@@ -193,4 +193,30 @@ class AllergeenController extends Controller
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het verwijderen.');
         }
     }
+
+    /**
+     * Filter allergens by name
+     */
+    public function SelectionName(Request $request)
+    {
+        // get the name from either 'Naam' or 'allergeen'
+        $name = $request->input('Naam', $request->input('allergeen'));
+
+        if (empty($name)) {
+            return redirect()->back()->with('error', 'Geen allergenenaam opgegeven.');
+        }
+
+        try {
+            $filteredAllergenen = AllergeenModel::filterAllergenenByName($name);
+
+            $Metadata = [
+                'title' => 'Gefilterde Allergenen',
+            ];
+
+            return view('allergeen.selection-information', compact('Metadata', 'filteredAllergenen'));
+        } catch (\Exception $e) {
+            Log::error('Error filtering allergens: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Er is een fout opgetreden bij het filteren van de allergenen.');
+        }
+    }
 }
