@@ -250,7 +250,7 @@ VALUES
     ,(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
     ,(6, 'Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
 
--- Step: 11
+-- Step: 10
 -- Goal: Inser new  data to Leverancier table
 -- **********************************************************************************
 -- Version    Date:        Author:         Description:
