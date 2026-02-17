@@ -10,8 +10,8 @@
 
     {{--  Allergeen Selection --}}
     <div class="mt-6 mb-4 flex items-center gap-4">
-        <form action="{{ '' }}" method="GET" class="flex items-center gap-4">
-            @method('GET')
+        <form action="{{ route('allergeen.selection-information') }}" method="GET" class="flex items-center gap-4">
+
             <label for="allergeen" class="font-semibold">Allergeen:</label>
 
             <select name="allergeen" id="allergeen"
