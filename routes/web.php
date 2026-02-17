@@ -57,6 +57,7 @@ Route::middleware(['auth', 'role:admin'])
     */
         Route::prefix('allergeen')->as('allergeen.')->group(function () {
             Route::get('/', [AllergeenController::class, 'index'])->name('index');
+            Route::get('/selection-information', [AllergeenController::class, 'SelectionName'])->name('selection-information');
             Route::get('create', [AllergeenController::class, 'create'])->name('create');
             Route::post('/', [AllergeenController::class, 'store'])->name('store');
             Route::get('{id}/edit', [AllergeenController::class, 'edit'])->name('edit');
