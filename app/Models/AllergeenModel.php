@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AllergeenModel extends Model
-{   
+{
     // define the table name
     protected $table = 'Allergeen';
 
@@ -37,6 +37,22 @@ class AllergeenModel extends Model
         }
     }
 
+    /**
+     * Fiter allergens by name
+     * @param string $name The name of the allergen to filter  by name
+     */
+    public static function filterAllergenenByName(string $name)
+    {
+        try {
+            // Call the stored procedure safely
+            $result = DB::select('CALL sp_allergeenSelection(?)', [$name]);
+            return $result ?: [];
+        } catch (\Exception $e) {
+            Log::error('Error filtering allergens: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     /*
      * Delete an allergen by ID
      */
@@ -52,7 +68,7 @@ class AllergeenModel extends Model
         }
     }
 
-     /*
+    /*
      * Update an allergen by ID
      */
     public static function updateAllergeenById($id, $naam, $omschrijving)
