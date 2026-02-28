@@ -10,11 +10,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($filteredAllergenen as $item)
-                    <tr>
-                        <td class="border border-gray-400 px-4 py-2">{{ $item->Omschrijving }}</td>
-                    </tr>
-                @endforeach
+                <tr>
+                    @foreach ($filteredAllergenen as $item)
+                        <td class="border border-gray-400 px-4 py-2">{{ $item->Omschrijving ?? 'N/A'}}</td>
+                    @endforeach
+                </tr>
             </tbody>
         </table>
     </div>
