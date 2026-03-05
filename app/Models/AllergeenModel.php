@@ -82,4 +82,58 @@ class AllergeenModel extends Model
             return false;
         }
     }
+
+    /**
+     * Get products per allergen with stock info (for Wireframe-02)
+     */
+    public static function getProductsPerAllergeen(string $allergeenNaam)
+    {
+        try {
+            return DB::select('
+                SELECT
+                    P.Id AS ProductId,
+                    P.Naam AS ProductNaam,
+                    A.Naam AS AllergeenNaam,
+                    A.Omschrijving AS Omschrijving,
+                    M.AantalAanwezig AS AantalAanwezig
+                FROM Product P
+                JOIN ProductPerAllergeen PA ON P.Id = PA.ProductId
+                JOIN Allergeen A ON PA.AllergeenId = A.Id
+                JOIN Magazijn M ON P.Id = M.ProductId
+                WHERE A.Naam = ?
+                ORDER BY P.Naam ASC
+            ', [$allergeenNaam]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching products per allergen: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get leverancier info for a product (for Wireframe-04)
+     */
+    public static function getLeverancierByProductId(int $productId)
+    {
+        try {
+            $result = DB::select('
+                SELECT
+                    L.Naam AS LeverancierNaam,
+                    L.Contactpersoon,
+                    L.Mobiel,
+                    C.Stad,
+                    C.Straat,
+                    C.Huisnummer
+                FROM ProductPerLeverancier PPL
+                JOIN Leverancier L ON PPL.LeverancierId = L.Id
+                LEFT JOIN Contact C ON L.fk_ContactId = C.Id
+                WHERE PPL.ProductId = ?
+                LIMIT 1
+            ', [$productId]);
+
+            return !empty($result) ? $result[0] : null;
+        } catch (\Exception $e) {
+            Log::error('Error fetching leverancier by product: ' . $e->getMessage());
+            return null;
+        }
+    }
 }
