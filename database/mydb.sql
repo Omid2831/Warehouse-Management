@@ -214,7 +214,7 @@ VALUES
 CREATE TABLE IF NOT EXISTS Leverancier
 (
      Id                 SMALLINT             UNSIGNED        NOT NULL      AUTO_INCREMENT
-    ,fk_ContactId       SMALLINT             UNSIGNED        NOT NULL
+    ,fk_ContactId       SMALLINT             UNSIGNED        NULL          UNIQUE
     ,Naam               VARCHAR(60)                          NOT NULL
     ,Contactpersoon     VARCHAR(60)                          NOT NULL
     ,Leveranciernummer  VARCHAR(11)                          NOT NULL
@@ -249,6 +249,30 @@ VALUES
     ,(4, 'Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823')
     ,(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234')
     ,(6, 'Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456');
+
+-- Step: 10
+-- Goal: Inser new  data to Leverancier table
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   10-12-2025      Omid Mhr       Requested new alter
+-- **********************************************************************************
+INSERT INTO Leverancier
+(
+     fk_ContactId
+    ,Naam
+    ,Contactpersoon
+    ,Leveranciernummer
+    ,Mobiel
+)
+VALUES
+(
+     7
+    ,'Hom Ken Food'
+    ,'Hom Ken'
+    ,'L1029234599'
+    ,'06-23458477'
+);
 
 -- Step: 11
 CREATE TABLE IF NOT EXISTS ProductPerLeverancier
