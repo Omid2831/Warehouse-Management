@@ -193,4 +193,48 @@ class AllergeenController extends Controller
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het verwijderen.');
         }
     }
+
+    /**
+     * Filter allergens by name — shows products per allergen (Wireframe-02)
+     */
+    public function SelectionName(Request $request)
+    {
+        $name = $request->input('Naam', $request->input('allergeen'));
+
+        if (empty($name)) {
+            return redirect()->back()->with('error', 'Geen allergenenaam opgegeven.');
+        }
+
+        try {
+            $products = AllergeenModel::getProductsPerAllergeen($name);
+
+            $Metadata = [
+                'title' => 'Overzicht Allergenen',
+            ];
+
+            return view('allergeen.selection-information', compact('Metadata', 'products', 'name'));
+        } catch (\Exception $e) {
+            Log::error('Error filtering allergens: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Er is een fout opgetreden bij het filteren van de allergenen.');
+        }
+    }
+
+    /**
+     * Show leverancier info for a product (Wireframe-04)
+     */
+    public function productLeverancierInfo(int $productId)
+    {
+        try {
+            $leverancier = AllergeenModel::getLeverancierByProductId($productId);
+
+            $Metadata = [
+                'title' => 'Overzicht Leverancier gegevens',
+            ];
+
+            return view('allergeen.leverancier-info', compact('Metadata', 'leverancier'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching leverancier info: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Er is een fout opgetreden.');
+        }
+    }
 }
