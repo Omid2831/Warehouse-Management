@@ -39,7 +39,7 @@ GROUP BY
     L.Leveranciernummer,
     L.Mobiel
 ORDER BY
-    L.Naam
+    L.Naam DESC
 LIMIT
     startRow, pageSize;
 

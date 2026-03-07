@@ -24,7 +24,8 @@ BEGIN
         ON L.Id = PPL.LeverancierId
     LEFT JOIN Contact AS C
         ON L.fk_ContactId = C.Id
-    GROUP BY L.Id;
+    GROUP BY L.Id
+    ORDER BY L.Id, L.Naam DESC;
 
 
 
