@@ -40,6 +40,25 @@ class LeverancierController extends Controller
         }
     }
 
+    public function geleverdeProducten(Request $request)
+    {
+        $startDatum = $request->filled('startdatum') ? $request->input('startdatum') : "";
+        $eindDatum  = $request->filled('einddatum')  ? $request->input('einddatum')  : "";
+
+        $producten = $this->leverancierModel->getGeleverdeProductenOverzicht(
+            $startDatum,
+            $eindDatum,
+            10
+        );
+
+        return view('leverancier.geleverde-producten', [
+            'title'      => 'Overzicht geleverde producten',
+            'producten'  => $producten,
+            'startDatum' => $startDatum,
+            'eindDatum'  => $eindDatum,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -65,6 +66,58 @@ class LeverancierModel extends Model
     public function getProductsByLeverancierId($id)
     {
         return DB::select('CALL sp_getProductsByLeverancierId(?)', [$id]);
+    }
+
+    public function getGeleverdeProductenOverzicht(
+        ?string $startDatum = null,
+        ?string $eindDatum = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        $startDatum = $startDatum ?: "";
+        $eindDatum = $eindDatum ?: "";
+
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        try {
+            $rows = collect(DB::select(
+                'CALL sp_getGeleverdeProductenOverzicht(?, ?, ?, ?)',
+                [$page, $perPage, $startDatum, $eindDatum]
+            ));
+        } catch (QueryException $e) {
+            if (str_contains($e->getMessage(), 'No products available in the selected date range')) {
+                $rows = collect();
+            } else {
+                throw $e;
+            }
+        }
+
+        $total = DB::table('Leverancier as L')
+            ->join('ProductPerLeverancier as PPL', 'L.Id', '=', 'PPL.LeverancierId')
+            ->join('Product as P', 'PPL.ProductId', '=', 'P.Id')
+            ->when($startDatum, function ($query) use ($startDatum) {
+                $query->whereDate('PPL.DatumLevering', '>=', $startDatum);
+            })
+            ->when($eindDatum, function ($query) use ($eindDatum) {
+                $query->whereDate('PPL.DatumLevering', '<=', $eindDatum);
+            })
+            ->select('L.Id', 'P.Id')
+            ->groupBy('L.Id', 'P.Id')
+            ->get()
+            ->count();
+
+        return new LengthAwarePaginator(
+            $rows,
+            $total,
+            $perPage,
+            $page,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => array_filter([
+                    'startdatum' => $startDatum,
+                    'einddatum' => $eindDatum,
+                ], fn($value) => $value !== null && $value !== ''),
+            ]
+        );
     }
 
 
