@@ -57,12 +57,16 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="border border-gray-400 px-4 py-6 text-gray-500">
-                            Geen geleverde producten gevonden in deze periode.
+                        <td colspan="5" class="border border-gray-400 px-4 py-6 font-semibold text-red-600 bg-red-50">
+                            There are no products available for now.
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4">
+        {{ $producten->links() }}
     </div>
 @endsection
