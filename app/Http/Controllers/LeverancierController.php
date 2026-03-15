@@ -48,7 +48,7 @@ class LeverancierController extends Controller
         $producten = $this->leverancierModel->getGeleverdeProductenOverzicht(
             $startDatum,
             $eindDatum,
-            10
+            7
         );
 
         return view('leverancier.geleverde-producten', [

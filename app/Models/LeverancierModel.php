@@ -71,7 +71,7 @@ class LeverancierModel extends Model
     public function getGeleverdeProductenOverzicht(
         ?string $startDatum = null,
         ?string $eindDatum = null,
-        int $perPage = 10
+        int $perPage = 7
     ): LengthAwarePaginator {
         $startDatum = $startDatum ?: null;
         $eindDatum = $eindDatum ?: null;
