@@ -48,10 +48,10 @@
                         <td class="border border-gray-400 px-4 py-2">{{ $product->Productnaam }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $product->TotaalGeleverd }}</td>
                         <td class="border border-gray-400 px-4 py-2">
-                            <a href="{{ route('leverancier.show', $product->LeverancierId) }}"
+                            <a href="{{ route('leverancier.geleverde-producten-specificatie', ['leverancier' => $product->LeverancierId, 'product' => $product->ProductId, 'startdatum' => $startDatum, 'einddatum' => $eindDatum]) }}"
                                 class="inline-flex items-center text-green-600 hover:text-green-800">
                                 <i class="bx bxs-detail bx-bounce text-xl" aria-hidden="true"></i>
-                                <span class="sr-only">Details van {{ $product->NaamLeverancier }}</span>
+                                <span class="sr-only">Specificatie van {{ $product->Productnaam }}</span>
                             </a>
                         </td>
                     </tr>
