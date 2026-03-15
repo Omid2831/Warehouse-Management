@@ -73,8 +73,8 @@ class LeverancierModel extends Model
         ?string $eindDatum = null,
         int $perPage = 10
     ): LengthAwarePaginator {
-        $startDatum = $startDatum ?: "";
-        $eindDatum = $eindDatum ?: "";
+        $startDatum = $startDatum ?: null;
+        $eindDatum = $eindDatum ?: null;
 
         $page = LengthAwarePaginator::resolveCurrentPage();
 
