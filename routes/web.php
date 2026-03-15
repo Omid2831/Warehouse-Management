@@ -73,6 +73,8 @@ Route::middleware(['auth', 'role:admin'])
     */
         Route::prefix('leverancier')->as('leverancier.')->group(function () {
             Route::get('/', [LeverancierController::class, 'index'])->name('index');
+            Route::get('/geleverde-producten', [LeverancierController::class, 'geleverdeProducten'])->name('geleverde-producten');
+            Route::get('/geleverde-producten/{leverancier}/specificatie/{product}', [LeverancierController::class, 'specificatieGeleverdProduct'])->name('geleverde-producten-specificatie');
             Route::get('{leverancier}/edit', [LeverancierController::class, 'edit'])->name('edit');
             Route::put('{leverancier}', [LeverancierController::class, 'update'])->name('update');
             Route::get('{leverancier}', [LeverancierController::class, 'show'])->name('show');

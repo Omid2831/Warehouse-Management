@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -67,6 +68,58 @@ class LeverancierModel extends Model
         return DB::select('CALL sp_getProductsByLeverancierId(?)', [$id]);
     }
 
+    public function getGeleverdeProductenOverzicht(
+        ?string $startDatum = null,
+        ?string $eindDatum = null,
+        int $perPage = 7
+    ): LengthAwarePaginator {
+        $startDatum = $startDatum ?: null;
+        $eindDatum = $eindDatum ?: null;
+
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        try {
+            $rows = collect(DB::select(
+                'CALL sp_getGeleverdeProductenOverzicht(?, ?, ?, ?)',
+                [$page, $perPage, $startDatum, $eindDatum]
+            ));
+        } catch (QueryException $e) {
+            if (str_contains($e->getMessage(), 'No products available in the selected date range')) {
+                $rows = collect();
+            } else {
+                throw $e;
+            }
+        }
+
+        $total = DB::table('Leverancier as L')
+            ->join('ProductPerLeverancier as PPL', 'L.Id', '=', 'PPL.LeverancierId')
+            ->join('Product as P', 'PPL.ProductId', '=', 'P.Id')
+            ->when($startDatum, function ($query) use ($startDatum) {
+                $query->whereDate('PPL.DatumLevering', '>=', $startDatum);
+            })
+            ->when($eindDatum, function ($query) use ($eindDatum) {
+                $query->whereDate('PPL.DatumLevering', '<=', $eindDatum);
+            })
+            ->select('L.Id', 'P.Id')
+            ->groupBy('L.Id', 'P.Id')
+            ->get()
+            ->count();
+
+        return new LengthAwarePaginator(
+            $rows,
+            $total,
+            $perPage,
+            $page,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => array_filter([
+                    'startdatum' => $startDatum,
+                    'einddatum' => $eindDatum,
+                ], fn($value) => $value !== null && $value !== ''),
+            ]
+        );
+    }
+
 
     public function updateLeverancierAndContact(int $leverancierId, array $payload): bool
     {
@@ -102,5 +155,53 @@ class LeverancierModel extends Model
     {
         $result = DB::select('SELECT * FROM Leverancier WHERE Id = ?', [$id]);
         return !empty($result) ? $result[0] : null;
+    }
+
+    public function getGeleverdProductSpecificatie(
+        int $leverancierId,
+        int $productId,
+        ?string $startDatum = null,
+        ?string $eindDatum = null
+    ): array {
+        $product = DB::table('ProductPerLeverancier as PPL')
+            ->join('Product as P', 'P.Id', '=', 'PPL.ProductId')
+            ->join('Leverancier as L', 'L.Id', '=', 'PPL.LeverancierId')
+            ->select(
+                'P.Id as ProductId',
+                'P.Naam as Productnaam',
+                'L.Id as LeverancierId',
+                'L.Naam as NaamLeverancier'
+            )
+            ->where('PPL.LeverancierId', $leverancierId)
+            ->where('PPL.ProductId', $productId)
+            ->first();
+
+        $allergenen = DB::table('ProductPerAllergeen as PPA')
+            ->join('Allergeen as A', 'A.Id', '=', 'PPA.AllergeenId')
+            ->select('A.Naam')
+            ->where('PPA.ProductId', $productId)
+            ->where('PPA.IsActief', 1)
+            ->orderBy('A.Naam')
+            ->pluck('A.Naam');
+
+        $leveringen = DB::table('ProductPerLeverancier as PPL')
+            ->selectRaw("DATE_FORMAT(PPL.DatumLevering, '%d-%m-%Y') as DatumLevering")
+            ->addSelect('PPL.Aantal')
+            ->where('PPL.LeverancierId', $leverancierId)
+            ->where('PPL.ProductId', $productId)
+            ->when($startDatum, function ($query) use ($startDatum) {
+                $query->whereDate('PPL.DatumLevering', '>=', $startDatum);
+            })
+            ->when($eindDatum, function ($query) use ($eindDatum) {
+                $query->whereDate('PPL.DatumLevering', '<=', $eindDatum);
+            })
+            ->orderByDesc('PPL.DatumLevering')
+            ->get();
+
+        return [
+            'product' => $product,
+            'allergenen' => $allergenen,
+            'leveringen' => $leveringen,
+        ];
     }
 }
