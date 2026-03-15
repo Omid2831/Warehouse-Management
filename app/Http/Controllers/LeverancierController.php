@@ -59,6 +59,39 @@ class LeverancierController extends Controller
         ]);
     }
 
+    public function specificatieGeleverdProduct(Request $request, int $leverancier, int $product)
+    {
+        $validated = $request->validate([
+            'startdatum' => 'nullable|date',
+            'einddatum' => 'nullable|date|after_or_equal:startdatum',
+        ]);
+
+        $startDatum = $validated['startdatum'] ?? null;
+        $eindDatum = $validated['einddatum'] ?? null;
+
+        $specificatie = $this->leverancierModel->getGeleverdProductSpecificatie(
+            $leverancier,
+            $product,
+            $startDatum,
+            $eindDatum
+        );
+
+        if (!$specificatie['product']) {
+            abort(404, 'Specificatie niet gevonden voor dit product');
+        }
+
+        return view('leverancier.specificatie-geleverd-product', [
+            'title' => 'Specificatie geleverde producten',
+            'productInfo' => $specificatie['product'],
+            'allergenen' => $specificatie['allergenen'],
+            'leveringen' => $specificatie['leveringen'],
+            'startDatum' => $startDatum,
+            'eindDatum' => $eindDatum,
+            'leverancierId' => $leverancier,
+            'productId' => $product,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

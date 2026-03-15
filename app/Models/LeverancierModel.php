@@ -156,4 +156,52 @@ class LeverancierModel extends Model
         $result = DB::select('SELECT * FROM Leverancier WHERE Id = ?', [$id]);
         return !empty($result) ? $result[0] : null;
     }
+
+    public function getGeleverdProductSpecificatie(
+        int $leverancierId,
+        int $productId,
+        ?string $startDatum = null,
+        ?string $eindDatum = null
+    ): array {
+        $product = DB::table('ProductPerLeverancier as PPL')
+            ->join('Product as P', 'P.Id', '=', 'PPL.ProductId')
+            ->join('Leverancier as L', 'L.Id', '=', 'PPL.LeverancierId')
+            ->select(
+                'P.Id as ProductId',
+                'P.Naam as Productnaam',
+                'L.Id as LeverancierId',
+                'L.Naam as NaamLeverancier'
+            )
+            ->where('PPL.LeverancierId', $leverancierId)
+            ->where('PPL.ProductId', $productId)
+            ->first();
+
+        $allergenen = DB::table('ProductPerAllergeen as PPA')
+            ->join('Allergeen as A', 'A.Id', '=', 'PPA.AllergeenId')
+            ->select('A.Naam')
+            ->where('PPA.ProductId', $productId)
+            ->where('PPA.IsActief', 1)
+            ->orderBy('A.Naam')
+            ->pluck('A.Naam');
+
+        $leveringen = DB::table('ProductPerLeverancier as PPL')
+            ->selectRaw("DATE_FORMAT(PPL.DatumLevering, '%d-%m-%Y') as DatumLevering")
+            ->addSelect('PPL.Aantal')
+            ->where('PPL.LeverancierId', $leverancierId)
+            ->where('PPL.ProductId', $productId)
+            ->when($startDatum, function ($query) use ($startDatum) {
+                $query->whereDate('PPL.DatumLevering', '>=', $startDatum);
+            })
+            ->when($eindDatum, function ($query) use ($eindDatum) {
+                $query->whereDate('PPL.DatumLevering', '<=', $eindDatum);
+            })
+            ->orderByDesc('PPL.DatumLevering')
+            ->get();
+
+        return [
+            'product' => $product,
+            'allergenen' => $allergenen,
+            'leveringen' => $leveringen,
+        ];
+    }
 }
