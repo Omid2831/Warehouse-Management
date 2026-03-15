@@ -40,10 +40,11 @@ BEGIN
               AND (p_EindDatum IS NULL OR PPL.DatumLevering <= p_EindDatum)
             GROUP BY
                  L.Id, L.Naam, L.Contactpersoon, P.Id, P.Naam
+            ORDER BY L.Naam DESC
         )
         SELECT *
         FROM FilteredData
-        ORDER BY NaamLeverancier ASC, Productnaam ASC
+        ORDER BY NaamLeverancier DESC, TotaalGeleverd DESC
         LIMIT pageSize OFFSET startRow;
     END IF;
 
