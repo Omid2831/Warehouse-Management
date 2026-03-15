@@ -42,8 +42,8 @@ class LeverancierController extends Controller
 
     public function geleverdeProducten(Request $request)
     {
-        $startDatum = $request->filled('startdatum') ? $request->input('startdatum') : "";
-        $eindDatum  = $request->filled('einddatum')  ? $request->input('einddatum')  : "";
+        $startDatum = $request->filled('startdatum') ? $request->input('startdatum') : null;
+        $eindDatum  = $request->filled('einddatum')  ? $request->input('einddatum')  : null;
 
         $producten = $this->leverancierModel->getGeleverdeProductenOverzicht(
             $startDatum,
