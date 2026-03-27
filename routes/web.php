@@ -82,6 +82,15 @@ Route::middleware(['auth', 'role:admin'])
 
         /*
     |--------------------------------------------------
+    | Producten met einddatum levering - assorstiment
+    |--------------------------------------------------
+    */
+        Route::prefix('assortiment')->as('assortiment.')->group(function () {
+            Route::get('/', [MagazijnController::class, 'assortiment'])->name('index');
+        });
+
+        /*
+    |--------------------------------------------------
     | Levering
     |--------------------------------------------------
     */
