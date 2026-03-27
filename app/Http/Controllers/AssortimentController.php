@@ -19,13 +19,20 @@ class AssortimentController extends Controller
      */
     public function index(Request $request)
     {
-        $assortiment = $this->assortimentModel->getAllOverzichtAssortiment();
-        $assortimentrange = $this->assortimentModel->getAssortimentByDateRange($request);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            $assortiment = $this->assortimentModel
+                ->getAssortimentByDateRange($startDate, $endDate);
+        } else {
+            $assortiment = $this->assortimentModel
+                ->getAllOverzichtAssortiment();
+        }
 
         return view('assortiment.index', [
             'title' => 'Assortiment Overzicht',
             'assortiment' => $assortiment,
-            'assortimentrange' => $assortimentrange,
         ]);
     }
 

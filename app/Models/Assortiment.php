@@ -26,14 +26,17 @@ class Assortiment extends Model
      * Get all assortiment data by calling the datestart and dateend parameters
      * - method used - paginate the results
      */
-    public static function getAssortimentByDateRange(Request $request)
+    public static function getAssortimentByDateRange($startDate, $endDate)
     {
-        $startDate = $request->input('start_date', now()->subMonth()->toDateString());
-        $endDate = $request->input('end_date', now()->toDateString());
-
-        $assortiment = DB::select('CALL sp_getAssortimentByDateRange(?, ?)',
-        [$startDate, $endDate]);
-
-        return $assortiment;
+        try {
+            return DB::select(
+                'CALL sp_getAssortimentByDateRange(?, ?)',
+                [$startDate, $endDate]
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(
+                'Error fetching assortiment data: ' . $e->getMessage()
+            );
+        }
     }
 }
