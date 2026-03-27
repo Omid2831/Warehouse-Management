@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LeveringController;
 use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\AllergeenController;
+use App\Http\Controllers\AssortimentController;
 use App\Http\Controllers\LeverancierController;
 
 /*
@@ -86,7 +87,7 @@ Route::middleware(['auth', 'role:admin'])
     |--------------------------------------------------
     */
         Route::prefix('assortiment')->as('assortiment.')->group(function () {
-            Route::get('/', [MagazijnController::class, 'assortiment'])->name('index');
+            Route::get('/', [AssortimentController::class, 'index'])->name('index');
         });
 
         /*
