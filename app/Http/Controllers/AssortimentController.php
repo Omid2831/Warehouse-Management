@@ -17,13 +17,15 @@ class AssortimentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $assortimentOverzicht = $this->assortimentModel->getAllOverzichtAssortiment();
+        $assortiment = $this->assortimentModel->getAllOverzichtAssortiment();
+        $assortimentrange = $this->assortimentModel->getAssortimentByDateRange($request);
 
         return view('assortiment.index', [
             'title' => 'Assortiment Overzicht',
-            'assortiment' => $assortimentOverzicht,
+            'assortiment' => $assortiment,
+            'assortimentrange' => $assortimentrange,
         ]);
     }
 
