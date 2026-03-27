@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LeveringController;
 use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\AllergeenController;
+use App\Http\Controllers\AssortimentController;
 use App\Http\Controllers\LeverancierController;
 
 /*
@@ -17,7 +18,7 @@ use App\Http\Controllers\LeverancierController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 })->name('home');
 
 /*
@@ -78,6 +79,15 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{leverancier}/edit', [LeverancierController::class, 'edit'])->name('edit');
             Route::put('{leverancier}', [LeverancierController::class, 'update'])->name('update');
             Route::get('{leverancier}', [LeverancierController::class, 'show'])->name('show');
+        });
+
+        /*
+    |--------------------------------------------------
+    | Producten met einddatum levering - assorstiment
+    |--------------------------------------------------
+    */
+        Route::prefix('assortiment')->as('assortiment.')->group(function () {
+            Route::get('/', [AssortimentController::class, 'index'])->name('index');
         });
 
         /*

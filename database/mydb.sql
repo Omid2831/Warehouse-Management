@@ -65,6 +65,7 @@ VALUES
 -- **********************************************************************************
 DROP TABLE IF EXISTS Magazijn;
 DROP TABLE IF EXISTS Product;
+DROP TABLE IF EXISTS ProductEinddatumLevering;
 
 CREATE TABLE IF NOT EXISTS Product
 (
@@ -374,3 +375,46 @@ VALUES
  ,(13, 1)
  ,(13, 4)
  ,(13, 5);
+
+
+
+-- Step: 14
+-- Goal: Create a new table ProductEinddatumLevering
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   03-22-2026      Omid Mhr       Requested new table
+-- **********************************************************************************
+
+CREATE TABLE IF NOT EXISTS ProductEinddatumLevering(
+        Id                             MEDIUMINT       UNSIGNED          NOT NULL      AUTO_INCREMENT    PRIMARY KEY
+       ,PRODUCTID                      MEDIUMINT       UNSIGNED          NOT NULL
+       ,EindDatumLevering              DATE                              NOT NULL
+       ,IsActief                       BIT                               NOT NULL      DEFAULT 1
+       ,Opmerkingen                    VARCHAR(255)                          NULL      DEFAULT NULL
+       ,DatumAangemaakt                Datetime(6)                       NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+       ,DatumGewijzigd                 Datetime(6)                       NOT NULL      DEFAULT CURRENT_TIMESTAMP(6)
+       ,CONSTRAINT FK_ProductEinddatumLevering_ProductId_Product_Id FOREIGN KEY (ProductId) REFERENCES Product (Id)
+)ENGINE=InnoDB   AUTO_INCREMENT=1;
+
+-- Step: 15
+-- Goal: Fill table ProductEinddatumLevering with data
+-- **********************************************************************************
+-- Version    Date:        Author:         Description:
+-- ******* ********** **************** ******************
+--    01   03-22-2026      Omid Mhr       Requested
+-- **********************************************************************************
+INSERT INTO ProductEinddatumLevering
+(
+     ProductId
+    ,EindDatumLevering
+)
+VALUES
+ (1, '2024-06-01')
+,(2, '2024-05-22')
+,(3, '2024-05-30')
+,(4, '2024-05-12')
+,(7, '2024-05-27')
+,(10, '2024-05-03')
+,(11, '2024-02-09')
+,(14, '2024-01-01');
