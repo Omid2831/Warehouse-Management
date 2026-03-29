@@ -44,6 +44,16 @@
             <a href="{{ route('assortiment.index') }}"
                 class="inline-block mt-6 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Terug naar
                 overzicht</a>
+
+            <form action="{{ route('assortiment.destroy', $assortiment->productId) }}" method="POST"
+                class="inline-block mt-4">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    onclick="return confirm('Weet je zeker dat je dit product wilt verwijderen?')">
+                    Verwijder
+                </button>
+            </form>
         </div>
     </div>
 @endsection
