@@ -52,4 +52,17 @@ class Assortiment extends Model
             throw new \Exception('Error fetching assortiment details: ' . $e->getMessage());
         }
     }
+
+        /**
+         * Delete assortiment by Id by calling the stored procedure sp_deleteAssortimentById.
+         */
+    public static function deleteAssortimentById(string $id)
+    {
+        try {
+            DB::select('CALL sp_deleteAssortimentById(?)', [$id]);
+            return true; // Return true if deletion was successful
+        } catch (\Exception $e) {
+            throw new \Exception('Error deleting assortiment: ' . $e->getMessage());
+        }
+    }
 }
