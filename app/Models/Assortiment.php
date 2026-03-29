@@ -53,14 +53,18 @@ class Assortiment extends Model
         }
     }
 
-        /**
-         * Delete assortiment by Id by calling the stored procedure sp_deleteAssortimentById.
-         */
+    /**
+     * Delete assortiment by Id by calling the stored procedure sp_verwijderProductUitAssortiment.
+     */
     public static function deleteAssortimentById(string $id)
     {
         try {
-            DB::select('CALL sp_deleteAssortimentById(?)', [$id]);
-            return true; // Return true if deletion was successful
+            $result = DB::select('CALL sp_verwijderProductUitAssortiment(?)', [$id]);
+            // The stored procedure returns a message in the first row, 'message' key
+            if (isset($result[0]->message)) {
+                return $result[0]->message;
+            }
+            return null;
         } catch (\Exception $e) {
             throw new \Exception('Error deleting assortiment: ' . $e->getMessage());
         }

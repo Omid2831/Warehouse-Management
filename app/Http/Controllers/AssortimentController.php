@@ -58,11 +58,11 @@ class AssortimentController extends Controller
     public function show(string $id)
     {
         $assortimentDetails = $this->assortimentModel->getAssortimentById($id);
-        
+
         if (!$assortimentDetails) {
             return redirect()->route('assortiment.index')
                 ->with('error', 'Assortiment niet gevonden.');
-    }
+        }
 
         return view('assortiment.show', [
             'title' => 'Assortiment Details',
@@ -98,12 +98,12 @@ class AssortimentController extends Controller
         }
 
         try {
-            $this->assortimentModel->deleteAssortimentById($id);
-            return redirect()->route('assortiment.index')
-                ->with('success', 'Assortiment succesvol verwijderd.');
+            $message = $this->assortimentModel->deleteAssortimentById($id);
+            return redirect()->route('assortiment.show', $id)
+                ->with('message', $message);
         } catch (\Exception $e) {
-            return redirect()->route('assortiment.index')
-                ->with('error', 'Fout bij verwijderen assortiment.');
+            return redirect()->route('assortiment.show', $id)
+                ->with('message', 'Fout bij verwijderen assortiment: ' . $e->getMessage());
         }
     }
 }
