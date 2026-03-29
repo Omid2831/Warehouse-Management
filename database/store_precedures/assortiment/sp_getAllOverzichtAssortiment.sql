@@ -13,11 +13,13 @@ BEGIN
     -- ORDER BY EINDDATUM LEVERING ASCENDING
 
     SELECT
-        L.Naam AS LeverancierNaam,
-        L.Contactpersoon AS Contactpersoon,
-        C.Stad AS Stad,
-        P.Naam AS ProductNaam,
-        PEL.EindDatumLevering AS EinddatumLevering
+         P.Id AS productId
+        ,L.Naam AS LeverancierNaam
+        ,L.Contactpersoon AS Contactpersoon
+        ,C.Stad AS Stad
+        ,P.Naam AS ProductNaam
+        ,PEL.EindDatumLevering AS EinddatumLevering
+
     FROM Leverancier AS L
     INNER JOIN Contact AS C
         ON L.fk_ContactId = C.Id

@@ -57,7 +57,17 @@ class AssortimentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $assortimentDetails = $this->assortimentModel->getAssortimentById($id);
+        
+        if (!$assortimentDetails) {
+            return redirect()->route('assortiment.index')
+                ->with('error', 'Assortiment niet gevonden.');
+    }
+
+        return view('assortiment.show', [
+            'title' => 'Assortiment Details',
+            'assortiment' => $assortimentDetails,
+        ]);
     }
 
     /**

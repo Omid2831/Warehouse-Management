@@ -39,4 +39,17 @@ class Assortiment extends Model
             );
         }
     }
+
+    /**
+     * Get assortiment details by Id by calling the stored procedure sp_getAssortimentById.
+     */
+    public static function getAssortimentById(string $id)
+    {
+        try {
+            $result = DB::select('CALL sp_getAssortimentById(?)', [$id]);
+            return $result ? $result[0] : null; // Return the first result or null if not found
+        } catch (\Exception $e) {
+            throw new \Exception('Error fetching assortiment details: ' . $e->getMessage());
+        }
+    }
 }
