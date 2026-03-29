@@ -5,6 +5,7 @@ DROP VIEW IF EXISTS vw_AssortimentByDateRange;
 
 CREATE OR REPLACE VIEW vw_AssortimentByDateRange AS
 SELECT
+    P.Id AS productId,
     L.Naam AS LeverancierNaam,
     L.Contactpersoon AS Contactpersoon,
     C.Stad AS Stad,
