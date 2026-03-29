@@ -26,7 +26,7 @@
                         <th class="px-4 py-2 font-semibold">Stad</th>
                         <th class="px-4 py-2 font-semibold">Productnaam</th>
                         <th class="px-4 py-2 font-semibold">Einddatum Levering</th>
-                        <th class="px-4 py-2 font-semibold">Verwijder</th>
+                        <th class="px-4 py-2 font-semibold">Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,18 +38,8 @@
                             <td class="px-4 py-2">{{ $item->ProductNaam }}</td>
                             <td class="px-4 py-2">{{ $item->EinddatumLevering }}</td>
                             <td class="px-4 py-2 text-center">
-                                {{-- Uncomment for delete functionality --}}
-                                {{--
-                            <form method="POST" action="{{ route('assortiment.destroy', $item->ProductId) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="text-red-600 hover:text-red-800 font-bold text-lg"
-                                    onclick="return confirm('Weet je zeker dat je dit product wilt verwijderen?')">
-                                    &times;
-                                </button>
-                            </form>
-                            --}}
+                                <a href="{{ route('assortiment.show', $item->productId) }}"
+                                    class="text-blue-600 hover:underline">Bekijk</a>
                             </td>
                         </tr>
                     @endforeach
