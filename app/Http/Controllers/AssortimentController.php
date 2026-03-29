@@ -91,6 +91,19 @@ class AssortimentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $assortimentDetails = $this->assortimentModel->getAssortimentById($id);
+        if (!$assortimentDetails) {
+            return redirect()->route('assortiment.index')
+                ->with('error', 'Assortiment niet gevonden.');
+        }
+
+        try {
+            $this->assortimentModel->deleteAssortimentById($id);
+            return redirect()->route('assortiment.index')
+                ->with('success', 'Assortiment succesvol verwijderd.');
+        } catch (\Exception $e) {
+            return redirect()->route('assortiment.index')
+                ->with('error', 'Fout bij verwijderen assortiment.');
+        }
     }
 }
