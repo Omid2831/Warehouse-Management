@@ -39,7 +39,7 @@
                             <td class="px-4 py-2">{{ $item->EinddatumLevering }}</td>
                             <td class="px-4 py-2 text-center">
                                 <a href="{{ route('assortiment.show', $item->productId) }}"
-                                    class="text-blue-600 hover:underline">Bekijk</a>
+                                    class="text-blue-600 hover:underline mr-3">Bekijk</a>
                             </td>
                         </tr>
                     @endforeach
