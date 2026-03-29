@@ -89,6 +89,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::prefix('assortiment')->as('assortiment.')->group(function () {
             Route::get('/', [AssortimentController::class, 'index'])->name('index');
             Route::get('{id}', [AssortimentController::class, 'show'])->name('show');
+            Route::delete('{id}', [AssortimentController::class, 'destroy'])->name('destroy');
         });
 
         /*
